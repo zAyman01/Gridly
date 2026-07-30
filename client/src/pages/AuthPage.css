@@ -1,0 +1,154 @@
+/* ═══════════════════════════════════════════════════════════
+   AUTH — the sign-in plate and the tape beside it
+   ═══════════════════════════════════════════════════════════ */
+
+.auth {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 1fr;
+  background: var(--paper);
+}
+
+.auth-main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1.5rem 3rem;
+}
+.auth-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.auth-body {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 0;
+}
+
+.auth-plate {
+  width: 100%;
+  max-width: 25rem;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--color-signal);
+  border-radius: var(--radius-plate);
+  padding: 1.75rem 1.5rem 1.5rem;
+  box-shadow: var(--shadow-lift);
+}
+.auth-title {
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" 114;
+  font-weight: 800;
+  font-size: 1.875rem;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0.625rem 0 0.375rem;
+}
+.auth-sub {
+  margin: 0 0 1.5rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.auth-field {
+  margin-bottom: 1rem;
+}
+.auth-hint {
+  margin: 0.375rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--muted);
+}
+.auth-submit {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+.auth-alt {
+  margin: 1.25rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+.auth-alt a {
+  color: var(--ink);
+  font-weight: 500;
+  text-decoration: none;
+  box-shadow: inset 0 -2px 0 var(--color-signal);
+}
+
+/* ── the tape: a sample of the board talking to itself ──── */
+
+.auth-aside {
+  display: none;
+  position: relative;
+  background: var(--sunk);
+  border-left: 1px solid var(--rule);
+  padding: 3rem;
+  flex-direction: column;
+  justify-content: center;
+}
+.auth-aside-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 25rem;
+}
+.auth-aside-title {
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" 112;
+  font-weight: 700;
+  font-size: 1.75rem;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin: 0.75rem 0 1.75rem;
+}
+.auth-tape {
+  border-top: 1px solid var(--rule);
+}
+.auth-tape-row {
+  position: relative;
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+  padding: 0.625rem 0 0.625rem 1rem;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.8125rem;
+}
+.auth-tape-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1.0625rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--tape-color, var(--muted));
+}
+.auth-tape-time {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--muted);
+}
+
+@media (min-width: 900px) {
+  .auth {
+    grid-template-columns: 1fr 1fr;
+  }
+  .auth-aside {
+    display: flex;
+  }
+  .auth-reverse .auth-main {
+    order: 2;
+  }
+  .auth-reverse .auth-aside {
+    order: 1;
+    border-left: none;
+    border-right: 1px solid var(--rule);
+  }
+}

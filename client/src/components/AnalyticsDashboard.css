@@ -1,0 +1,220 @@
+/* ═══════════════════════════════════════════════════════════
+   ANALYTICS — the gauge board
+
+   Charts are instruments on the same enamel plates as everything
+   else: square corners, ruled edges, monospace labels, tabular
+   figures. Nothing here invents its own surface.
+   ═══════════════════════════════════════════════════════════ */
+
+.analytics-dash {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.analytics-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 2px solid var(--ink);
+}
+
+.analytics-title {
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" 112;
+  font-weight: 700;
+  font-size: clamp(1.125rem, 3vw, 1.5rem);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--ink);
+  margin: 0;
+}
+
+/* ── the ribbon: headline readings ──────────────────────── */
+
+.analytics-ribbon {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: var(--space-3);
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--metric-lamp, var(--color-signal));
+  border-radius: var(--radius-plate);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  box-shadow: var(--shadow-plate);
+}
+
+.metric-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Figures are tabular so a value never shifts the row width as it
+   ticks up. */
+.metric-val {
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" 108;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.metric-note {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+/* ── the grid of instruments ────────────────────────────── */
+
+/* Two columns at most: four instruments in a 3-up grid leave one
+   stranded on its own row, and a chart wants width more than a card
+   does. min() keeps the track from forcing a scroll on a 375px phone. */
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+  gap: var(--space-3);
+}
+
+.chart-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  /* Grid items default to min-width:auto, which lets a wide chart push
+     the track past its share and blow out the row. */
+  min-width: 0;
+  margin: 0;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-plate);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-plate);
+}
+
+.chart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.chart-title {
+  font-family: var(--font-display);
+  font-variation-settings: "wdth" 100;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  margin: 0;
+}
+
+.chart-unit {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.chart-wrapper {
+  height: 230px;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Recharts writes its own inline text; pull it back onto the system. */
+.chart-wrapper .recharts-text,
+.chart-wrapper .recharts-legend-item-text {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  fill: var(--muted);
+  color: var(--muted);
+}
+
+/* ── the readable fallback ──────────────────────────────── */
+
+/* A chart is not screen-reader material. Every instrument carries the
+   same numbers as a table, visually hidden but fully announced. */
+.chart-table {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ── states ─────────────────────────────────────────────── */
+
+.chart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 230px;
+  border: 1px dashed var(--rule);
+  border-radius: var(--radius-slip);
+  color: var(--muted);
+  text-align: center;
+  padding: var(--space-4);
+}
+.chart-empty-title {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.chart-empty-text {
+  font-size: 0.8125rem;
+  max-width: 22rem;
+  margin: 0;
+}
+
+.analytics-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+.analytics-skeleton .chart-card {
+  gap: var(--space-3);
+}
+
+.analytics-fault {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: center;
+  padding: var(--space-7) var(--space-4);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--color-stop);
+  border-radius: var(--radius-plate);
+  background: var(--panel);
+}
+.analytics-fault-text {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+  max-width: 28rem;
+}

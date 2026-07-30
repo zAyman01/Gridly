@@ -1,0 +1,220 @@
+/* ═══════════════════════════════════════════════════════════
+   COMMAND PALETTE — SIGNAL LINE
+   A machine-enamel dispatch finder for quick navigation across
+   workspaces, boards, and system actions.
+   ═══════════════════════════════════════════════════════════ */
+
+.cmd-k-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 38, 42, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12vh;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+  animation: cmd-k-fade-in var(--dur-enter) var(--ease-plate);
+}
+
+@keyframes cmd-k-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.cmd-k-modal {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-well);
+  box-shadow: var(--shadow-modal);
+  width: 100%;
+  max-width: 580px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: cmd-k-slide-down var(--dur-enter) var(--ease-plate);
+}
+
+@keyframes cmd-k-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.cmd-k-input-bar {
+  display: flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--rule);
+  background: var(--panel);
+  gap: var(--space-3);
+}
+
+.cmd-k-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.cmd-k-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  outline: none;
+}
+
+.cmd-k-input::placeholder {
+  color: var(--muted);
+}
+
+.cmd-k-esc {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--muted);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-slip);
+  padding: 2px 6px;
+  line-height: 1;
+  user-select: none;
+}
+
+.cmd-k-body {
+  max-height: 380px;
+  overflow-y: auto;
+  padding: var(--space-2) 0;
+}
+
+.cmd-k-section {
+  margin-bottom: var(--space-3);
+}
+
+.cmd-k-section:last-child {
+  margin-bottom: 0;
+}
+
+.cmd-k-section-title {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  padding: var(--space-1) var(--space-4);
+  margin-bottom: var(--space-1);
+}
+
+.cmd-k-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-2) var(--space-4);
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  transition: background-color var(--dur-tap) var(--ease-plate);
+  gap: var(--space-3);
+}
+
+.cmd-k-item:hover,
+.cmd-k-item.is-selected {
+  background: var(--sunk);
+}
+
+.cmd-k-item.is-selected {
+  border-left: 3px solid var(--color-signal);
+  padding-left: calc(var(--space-4) - 3px);
+}
+
+.cmd-k-item-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  flex: 1;
+}
+
+.cmd-k-item-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.cmd-k-item-sub {
+  font-size: 0.75rem;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cmd-k-badge {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--muted);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-slip);
+  padding: 1px 6px;
+  flex-shrink: 0;
+}
+
+.cmd-k-empty {
+  padding: var(--space-5) var(--space-4);
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.cmd-k-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-plate);
+  padding: 4px 10px;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all var(--dur-tap) var(--ease-plate);
+  height: 32px;
+}
+
+.cmd-k-pill:hover {
+  background: var(--sunk);
+  color: var(--ink);
+  border-color: var(--muted);
+}
+
+.cmd-k-pill-key {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-slip);
+  padding: 1px 5px;
+  line-height: 1.1;
+}
