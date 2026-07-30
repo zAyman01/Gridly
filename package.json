@@ -1,6 +1,7 @@
 {
   "name": "gridly",
   "private": true,
+  "type": "module",
   "workspaces": [
     "client"
   ],
