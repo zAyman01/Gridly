@@ -9,9 +9,16 @@ import { env } from "./config";
 // `querySrv ENOTFOUND` / `ENODATA` and the connection never opens.
 // Forcing Node's resolver to public DNS servers (which support SRV)
 // and preferring IPv4 makes the lookup succeed.
-dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
-if (typeof dns.setDefaultResultOrder === "function") {
-  dns.setDefaultResultOrder("ipv4first");
+//
+// Development only. A managed host resolves SRV correctly through its own
+// resolver, which is nearer and faster; pinning every lookup in a serverless
+// function to a public resolver only adds latency and a dependency on an
+// egress path that may not exist.
+if (!env.IS_PRODUCTION) {
+  dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
+  if (typeof dns.setDefaultResultOrder === "function") {
+    dns.setDefaultResultOrder("ipv4first");
+  }
 }
 
 declare global {
@@ -38,4 +45,9 @@ export async function connectDB(): Promise<typeof mongoose> {
     throw err;
   }
   return global.mongooseCache.conn;
+}
+
+/** 1 = connected. Used by /api/health so a green check means the DB answered. */
+export function isDBConnected(): boolean {
+  return mongoose.connection.readyState === 1;
 }

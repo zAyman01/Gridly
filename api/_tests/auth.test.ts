@@ -10,9 +10,9 @@ import request from "supertest";
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import jwt from "jsonwebtoken";
-import { authHandlers, signupSchema, loginSchema } from "../routes";
-import { validate, errorHandler } from "../middleware";
-import { User } from "../models";
+import { authHandlers, signupSchema, loginSchema } from "../_lib/routes";
+import { validate, errorHandler } from "../_lib/middleware";
+import { User } from "../_lib/models";
 
 let mongo: MongoMemoryServer;
 let app: express.Express;

@@ -76,4 +76,6 @@ npm run dev:client # Vite on :5173 (proxied to :4000)
 
 ### Configuration
 
-One file, at the repo root: copy `.env.example` to `.env` and fill it in. `api/config.ts` loads it by absolute path, so it applies whichever directory you start from, and Vite reads the `VITE_*` keys from the same file. Real environment variables take precedence, which is how production works — set them in the Vercel dashboard and ship no `.env` at all.
+One file, at the repo root: copy `.env.example` to `.env` and fill it in. `api/_lib/config.ts` finds it by walking up from the working directory, so it applies whichever directory you start from, and Vite reads the `VITE_*` keys from the same file. Real environment variables take precedence, which is how production works — set them in the Vercel dashboard and ship no `.env` at all.
+
+In production the required keys are not optional: a missing `MONGODB_URI`, `JWT_SECRET`, or `JWT_REFRESH_SECRET` throws at startup instead of quietly falling back to the development defaults printed in `.env.example`, and the two JWT keys must be different values. A deployment that boots has real secrets behind it.

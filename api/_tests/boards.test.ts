@@ -10,9 +10,9 @@ import request from "supertest";
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import jwt from "jsonwebtoken";
-import { authHandlers, signupSchema, loginSchema, boardHandlers, createBoardSchema, addMemberSchema, updateMemberRoleSchema, listHandlers, taskHandlers, createTaskSchema, updateTaskSchema, moveTaskSchema, activityHandlers, userHandlers } from "../routes";
-import { authenticate, requireBoardRole, validate, errorHandler } from "../middleware";
-import { User, Workspace, Board, List, Task, ActivityLog } from "../models";
+import { authHandlers, signupSchema, loginSchema, boardHandlers, createBoardSchema, addMemberSchema, updateMemberRoleSchema, listHandlers, taskHandlers, createTaskSchema, updateTaskSchema, moveTaskSchema, activityHandlers, userHandlers } from "../_lib/routes";
+import { authenticate, requireBoardRole, validate, errorHandler } from "../_lib/middleware";
+import { User, Workspace, Board, List, Task, ActivityLog } from "../_lib/models";
 
 let mongo: MongoMemoryServer;
 let app: express.Express;

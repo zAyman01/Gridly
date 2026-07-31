@@ -6,8 +6,10 @@ dist
 .cache
 coverage
 .vercel
-api/tests
-api/seed.ts
+.playwright-mcp
+*.tsbuildinfo
+api/_tests
+api/_lib/seed.ts
 docs
 screenshots
 take_screenshots.mjs

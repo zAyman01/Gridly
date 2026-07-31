@@ -12,7 +12,8 @@
     "vercel-build": "npm run build",
     "test": "npm test -w client && npm run test:api",
     "test:api": "vitest run --config vitest.config.api.ts",
-    "seed": "tsx api/seed.ts"
+    "seed": "tsx api/_lib/seed.ts",
+    "typecheck": "tsc -p api/tsconfig.json --noEmit && tsc -p client/tsconfig.app.json --noEmit"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

@@ -7,20 +7,24 @@
 ```
 gridly/
 ├── api/                    # Express 4 + TypeScript backend
-│   ├── config.ts           # Env vars (dotenv)
-│   ├── db.ts               # Mongoose connection (global cached)
-│   ├── models.ts           # User, Workspace, BoardTemplate, Board, List, Task, Comment, Attachment, ActivityLog
-│   ├── middleware.ts       # authenticate(), requireBoardRole(), validate(), errorHandler
-│   ├── routes.ts           # Handlers + zod schemas (auth, board, list, task, comment, checklist, attachment)
-│   ├── workspaceRoutes.ts  # Workspace CRUD + members
-│   ├── analyticsRoutes.ts  # Aggregation for the dashboard
-│   ├── aiRoutes.ts         # Gemini: draft description, task breakdown
-│   ├── cloudinary.ts       # Upload/delete, isUploadConfigured()
-│   ├── socket.ts           # Socket.IO rooms + emitBoardChange()
-│   ├── utils.ts            # JWT sign/verify, ApiError class, types
-│   ├── tests/              # vitest + mongodb-memory-server
-│   ├── tsconfig.json       # Target ES2022, strict, bundler moduleResolution
-│   └── index.ts            # Express app (all routes wired) + Vercel handler
+│   ├── index.ts            # Express app (all routes wired) + Vercel handler
+│   │                       # ← the ONLY serverless function; see decision 1
+│   ├── _lib/               # Everything index.ts imports. Underscore keeps
+│   │   │                   # Vercel from making each file its own function.
+│   │   ├── config.ts       # Env vars (dotenv), fail-closed in production
+│   │   ├── db.ts           # Mongoose connection (global cached)
+│   │   ├── models.ts       # User, Workspace, BoardTemplate, Board, List, Task, Comment, Attachment, ActivityLog
+│   │   ├── middleware.ts   # authenticate(), requireBoardRole(), validate(), errorHandler
+│   │   ├── routes.ts       # Handlers + zod schemas (auth, board, list, task, comment, checklist, attachment)
+│   │   ├── workspaceRoutes.ts  # Workspace CRUD + members
+│   │   ├── analyticsRoutes.ts  # Aggregation for the dashboard
+│   │   ├── aiRoutes.ts     # Gemini: draft description, task breakdown
+│   │   ├── cloudinary.ts   # Upload/delete, isUploadConfigured()
+│   │   ├── socket.ts       # Socket.IO rooms + emitBoardChange()
+│   │   ├── utils.ts        # JWT sign/verify, ApiError class, types
+│   │   └── seed.ts         # Demo data (npm run seed)
+│   ├── _tests/             # vitest + mongodb-memory-server
+│   └── tsconfig.json       # Target ES2022, module CommonJS (matches Vercel)
 ├── client/                 # Vite 6 + React 19 + Tailwind v4 SPA
 │   └── src/
 │       ├── api.ts          # Generic fetch wrapper, typed API methods
@@ -61,7 +65,7 @@ npm run build      # cd client && vite build
 
 ## Key design decisions
 
-1. **Flat `api/` dir** — Vercel serverless entry at `api/index.ts` exports `handler(req, res)` with lazy mongoose connect
+1. **One function, `api/index.ts`** — it exports `handler(req, res)` with a lazy mongoose connect, and everything it imports lives in `api/_lib/`. Vercel turns *every* file directly under `api/` into its own serverless function; with a flat directory this project shipped 12 of them and sat exactly on the Hobby cap. Files and folders starting with `_` are exempt, so keep new modules in `_lib/` and only ever add a second file to `api/` if you genuinely want a second function
 2. **`global.mongooseCache`** — cached connection across serverless invocations (warm starts)
 3. **Tailwind v4** — no `tailwind.config`, all tokens in CSS `@theme` via `@tailwindcss/vite` plugin
 4. **Error handler** — `ApiError` class with `.badRequest()/.unauthorized()/.forbidden()/.notFound()/.conflict()` static factories; uniform `{ error: { code, message, details } }` response
@@ -70,12 +74,14 @@ npm run build      # cd client && vite build
 7. **Writes are whitelisted** — `PUT /tasks/:id` and `PUT /boards/:id` validate against zod schemas, so `board`, `createdBy`, and friends cannot be reassigned from the client
 8. **Deletes cascade** — removing a board, list, or task also removes its comments, attachments (including the Cloudinary asset), history, and inbound dependency links
 9. **Motion is opt-in** — landing reveals only hide content after `.hp-motion` is set at runtime; see `hooks/useScrollReveal.ts`
-10. **Landing scroll writes the DOM directly** — the progress rail, condensed nav, and hero parallax are set inside one `requestAnimationFrame` in `HomePage.tsx`, not through React state; routing them through state re-rendered the whole page on every scroll event. `.hp` uses `overflow-x: clip`, not `hidden` — `hidden` forces `overflow-y: auto`, which makes `.hp` the scroll container and stops the sticky nav from sticking
+10. **No `import.meta` in `api/`** — Vercel compiles the function to CommonJS, where `import.meta.url` is a syntax error at load time. It took the entire API down once; `api/_lib/config.ts` finds `.env` by walking up from `process.cwd()` instead
+11. **Config fails closed** — in production a missing `MONGODB_URI` / `JWT_SECRET` / `JWT_REFRESH_SECRET` throws at startup rather than falling back to the dev defaults published in this repo, and the two JWT keys must differ
+12. **Landing scroll writes the DOM directly** — the progress rail, condensed nav, and hero parallax are set inside one `requestAnimationFrame` in `HomePage.tsx`, not through React state; routing them through state re-rendered the whole page on every scroll event. `.hp` uses `overflow-x: clip`, not `hidden` — `hidden` forces `overflow-y: auto`, which makes `.hp` the scroll container and stops the sticky nav from sticking
 
 ## Tips for AI sessions
 
 - **Reading files**: grep before full reads. `grep -C 2 pattern` for context.
-- **API changes**: `routes.ts` has handlers; `index.ts` wires routes + middleware
+- **API changes**: `_lib/routes.ts` has handlers; `index.ts` wires routes + middleware. New backend modules go in `_lib/`, never directly in `api/`
 - **Client changes**: pages in `pages/`, API client in `api.ts`, auth in `auth.tsx`
 - **Style changes**: `globals.css` has all design tokens + shared component classes — no separate Tailwind config. Each page also has a sibling CSS file (`HomePage.css`, `DashboardPage.css`, `BoardViewPage.css`, `AuthPage.css`). Bundle order between `globals.css` and page CSS is not guaranteed, so page-level overrides of a shared class need extra specificity (`.input.bv-filter`, not `.bv-filter`)
 - **Design system**: "Signal Line" — machine-enamel surfaces, safety-yellow `--color-signal` as the only fill accent (never a text color), signal-lamp semantics (`--color-stop/flow/clear/steel/violet`), Archivo (display, variable width) + IBM Plex Sans (body) + IBM Plex Mono (data). Columns sit as stations on a continuous rail
@@ -89,9 +95,10 @@ npm run build      # cd client && vite build
 - **Shared UI**: `components/Wordmark.tsx` (logo + `RailMark`), `components/ThemeToggle.tsx`, `lib/identity.ts` (avatar colors, initials)
 - **Analytics**: `AnalyticsDashboard.tsx` is lazy-loaded on both the board and workspace pages — it carries recharts (~119 kB gzip). Its loading and failure states live in `AnalyticsStates.tsx` so they stay out of that chunk. Every chart renders a visually-hidden data table beside it, so no reading depends on colour
 - **Adding a page**: add route in `App.tsx`, create page in `pages/`, add API method in `api.ts`
-- **Adding a model**: add schema in `api/models.ts`, add CRUD in `routes.ts`, wire in `api/index.ts`
+- **Adding a model**: add schema in `api/_lib/models.ts`, add CRUD in `_lib/routes.ts`, wire in `api/index.ts`
 - **Build check**: `cd client && npx tsc -p tsconfig.app.json --noEmit` (client), `npx tsc -p api/tsconfig.json --noEmit` (api)
-- **Tests**: `npm test` runs both suites (`client` vitest + `vitest run --config vitest.config.api.ts`). API tests spin up `mongodb-memory-server`; boards live in a workspace, so use the `workspaceFor()` helper when adding cases
+- **Tests**: `npm test` runs both suites (`client` vitest + `vitest run --config vitest.config.api.ts`). API tests live in `api/_tests/` and spin up `mongodb-memory-server`; boards live in a workspace, so use the `workspaceFor()` helper when adding cases. `app.test.ts` drives the real `api/index.ts` app, the others mount handlers directly
+- **Typecheck**: `npm run typecheck` covers both halves
 
 ## Remote config
 

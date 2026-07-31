@@ -5,9 +5,10 @@ import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 import multer from "multer";
 import { createServer } from "http";
-import { env } from "./config";
-import { connectDB } from "./db";
-import { authenticate, requireBoardRole, validate, errorHandler } from "./middleware";
+import { env } from "./_lib/config";
+import { connectDB, isDBConnected } from "./_lib/db";
+import { ApiError } from "./_lib/utils";
+import { authenticate, requireBoardRole, validate, errorHandler } from "./_lib/middleware";
 import {
   authHandlers, boardHandlers, listHandlers, taskHandlers, userHandlers, activityHandlers,
   commentHandlers, checklistHandlers, attachmentHandlers,
@@ -16,13 +17,16 @@ import {
   createTaskSchema, updateTaskSchema, moveTaskSchema,
   createCommentSchema, updateCommentSchema,
   addChecklistItemSchema, toggleChecklistItemSchema, reorderChecklistSchema,
-} from "./routes";
-import workspaceRoutes from "./workspaceRoutes";
-import analyticsRoutes from "./analyticsRoutes";
-import aiRoutes from "./aiRoutes";
-import { initSocket } from "./socket";
+} from "./_lib/routes";
+import workspaceRoutes from "./_lib/workspaceRoutes";
+import analyticsRoutes from "./_lib/analyticsRoutes";
+import aiRoutes from "./_lib/aiRoutes";
+import { initSocket } from "./_lib/socket";
+import { isUploadConfigured } from "./_lib/cloudinary";
 
-const app = express();
+// Exported so tests can drive the real wiring — route order, the JSON 404,
+// and the health check are all things the per-handler tests cannot see.
+export const app = express();
 
 // Multer: memory storage for serverless + Cloudinary
 const upload = multer({
@@ -96,7 +100,22 @@ app.put("/api/boards/:boardId/members/:userId/role", authenticate, requireBoardR
 
 app.get("/api/users/search", authenticate, userHandlers.search);
 
-app.get("/api/health", (_req, res) => res.json({ status: "ok", timestamp: new Date().toISOString() }));
+// A health check that always answers "ok" cannot fail, so it reports the one
+// dependency that actually decides whether requests can be served.
+app.get("/api/health", (_req, res) => {
+  const db = isDBConnected();
+  res.status(db ? 200 : 503).json({
+    status: db ? "ok" : "degraded",
+    db: db ? "connected" : "disconnected",
+    uploads: isUploadConfigured(),
+    ai: Boolean(env.GEMINI_API_KEY),
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Anything else under /api is a client error, not a page — answer in the same
+// shape as every other API response instead of Express's default HTML 404.
+app.use("/api", (_req, _res, next) => next(ApiError.notFound("Endpoint not found")));
 
 app.use(errorHandler);
 
@@ -107,10 +126,21 @@ export default async function handler(req: any, res: any) {
     await connectDB();
   } catch (err) {
     console.error("[db] connect error:", err);
-    res.status(500).json({ error: { code: "DB_ERROR", message: "Database connection failed" } });
-    return;
+    // The health check is the one route that must still answer while the
+    // database is unreachable — reporting that is the whole point of it.
+    if (!String(req.url || "").startsWith("/api/health")) {
+      res.status(503).json({ error: { code: "DB_UNAVAILABLE", message: "Database connection failed" } });
+      return;
+    }
   }
-  return new Promise<void>((resolve) => { res.on("finish", resolve); app(req, res); });
+  // `close` as well as `finish`: an aborted request never finishes, and a
+  // handler promise that never settles holds the invocation open until it
+  // times out.
+  return new Promise<void>((resolve) => {
+    res.on("finish", resolve);
+    res.on("close", resolve);
+    app(req, res);
+  });
 }
 
 // ─── Dev server ───────────────────────────────────────────────

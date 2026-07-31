@@ -14,6 +14,15 @@ import { env } from "./config";
 
 // ─── Auth Routes ──────────────────────────────────────────────
 
+/** One definition, so the three places that set this cookie cannot drift. */
+const REFRESH_COOKIE = {
+  httpOnly: true,
+  secure: env.IS_PRODUCTION,
+  sameSite: "lax",
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  path: "/api/auth",
+} as const;
+
 export const signupSchema = z.object({ email: z.string().email().max(255), password: z.string().min(8).max(128), name: z.string().min(1).max(100) });
 export const loginSchema = z.object({ email: z.string().email(), password: z.string().min(1) });
 
@@ -31,10 +40,7 @@ export const authHandlers = {
       user.refreshToken = await bcrypt.hash(refreshToken, 12);
       await user.save();
 
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true, secure: process.env.NODE_ENV === "production",
-        sameSite: "lax", maxAge: 7 * 24 * 60 * 60 * 1000, path: "/api/auth",
-      });
+      res.cookie("refreshToken", refreshToken, REFRESH_COOKIE);
       res.status(201).json({ data: { user: user.toJSON(), accessToken } });
     } catch (err) { next(err); }
   },
@@ -52,10 +58,7 @@ export const authHandlers = {
       user.refreshToken = await bcrypt.hash(refreshToken, 12);
       await user.save();
 
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true, secure: process.env.NODE_ENV === "production",
-        sameSite: "lax", maxAge: 7 * 24 * 60 * 60 * 1000, path: "/api/auth",
-      });
+      res.cookie("refreshToken", refreshToken, REFRESH_COOKIE);
       res.json({ data: { user: user.toJSON(), accessToken } });
     } catch (err) { next(err); }
   },
@@ -78,10 +81,7 @@ export const authHandlers = {
       user.refreshToken = await bcrypt.hash(newRefresh, 12);
       await user.save();
 
-      res.cookie("refreshToken", newRefresh, {
-        httpOnly: true, secure: process.env.NODE_ENV === "production",
-        sameSite: "lax", maxAge: 7 * 24 * 60 * 60 * 1000, path: "/api/auth",
-      });
+      res.cookie("refreshToken", newRefresh, REFRESH_COOKIE);
       res.json({ data: { accessToken: newAccess } });
     } catch (err) { next(err); }
   },
@@ -127,8 +127,14 @@ export const boardHandlers = {
   list: async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
       const query: any = { $or: [{ owner: req.user!.userId }, { "members.user": req.user!.userId }] };
-      if (req.query.workspace) {
-        query.workspace = req.query.workspace;
+      // `?workspace[$ne]=x` arrives as an object under Express's query parser,
+      // and anything that is not an id makes Mongoose throw a CastError.
+      const workspace = req.query.workspace;
+      if (workspace !== undefined) {
+        if (typeof workspace !== "string" || !isValidObjectId(workspace)) {
+          return next(ApiError.badRequest("Invalid workspace id"));
+        }
+        query.workspace = workspace;
       }
       const boards = await Board.find(query).sort({ updatedAt: -1 });
       res.json({ data: boards });

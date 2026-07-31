@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
+import { Response, NextFunction, ErrorRequestHandler } from "express";
 import { ZodSchema, ZodError } from "zod";
 import { isValidObjectId } from "mongoose";
 import { AuthRequest, BoardRole, ApiError, verifyAccessToken } from "./utils";

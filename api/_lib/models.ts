@@ -12,7 +12,9 @@ export interface IUser extends Document {
 
 const userSchema = new Schema<IUser>(
   {
-    email: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
+    // `unique` already builds the index — adding `index: true` makes Mongoose
+    // declare it twice and warn about a duplicate.
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true, minlength: 8, select: false },
     name: { type: String, required: true, trim: true },
     avatar: { type: String },
