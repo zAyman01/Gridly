@@ -1,0 +1,3 @@
+import {defineConfig} from '@playwright/test';
+import {fileURLToPath} from 'node:url';
+export default defineConfig({testDir:'.',testMatch:'capture.spec.mjs',workers:1,timeout:180000,reporter:'list',outputDir:'../test-results/portfolio',use:{baseURL:'http://127.0.0.1:3104',viewport:{width:1920,height:1080},deviceScaleFactor:1,locale:'en-GB',timezoneId:'Africa/Cairo',reducedMotion:'reduce',serviceWorkers:'block',actionTimeout:15000},webServer:{cwd:fileURLToPath(new URL('..',import.meta.url)),command:'npm run build && npm run preview -w @gridly/client -- --host 127.0.0.1 --port 3104 --strictPort',url:'http://127.0.0.1:3104',reuseExistingServer:false,timeout:180000,env:{VITE_API_URL:'/api',VITE_WS_URL:''}}});

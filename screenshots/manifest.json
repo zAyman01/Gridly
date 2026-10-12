@@ -1,0 +1,310 @@
+{
+  "capturedOn": "2026-10-12",
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "backendRunning": false,
+  "screenshots": [
+    {
+      "file": "01-home.png",
+      "route": "/",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "01-home-1-the-same-cards-however-you-need-to-see-them.png",
+      "route": "/",
+      "section": "The same cards, however you need to see them",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "01-home-2-a-card-holds-the-whole-job-not-just-its-name.png",
+      "route": "/",
+      "section": "A card holds the whole job, not just its name",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "01-home-3-ask-for-a-plan-read-the-result.png",
+      "route": "/",
+      "section": "Ask for a plan. Read the result.",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "01-home-4-four-moves-from-empty-to-running.png",
+      "route": "/",
+      "section": "Four moves from empty to running",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "01-home-5-invite-at-the-level-you-mean.png",
+      "route": "/",
+      "section": "Invite at the level you mean",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "01-home-6-pay-when-the-board-grows.png",
+      "route": "/",
+      "section": "Pay when the board grows",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "01-home-7-before-you-start.png",
+      "route": "/",
+      "section": "Before you start",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "01-home-8-put-the-work-on-the-line.png",
+      "route": "/",
+      "section": "Put the work on the line.",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "02-login.png",
+      "route": "/login",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "03-signup.png",
+      "route": "/signup",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "04-workspaces.png",
+      "route": "/workspaces",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "05-new-workspace-form.png",
+      "route": "/workspaces",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "06-workspace-boards.png",
+      "route": "/w/acme-studio",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "07-workspace-analytics.png",
+      "route": "/w/acme-studio",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "08-new-board-dialog.png",
+      "route": "/w/acme-studio",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "09-board-kanban.png",
+      "route": "/boards/board-1",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "10-board-table.png",
+      "route": "/boards/board-1",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "10-board-calendar.png",
+      "route": "/boards/board-1",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "10-board-timeline.png",
+      "route": "/boards/board-1",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "10-board-analytics.png",
+      "route": "/boards/board-1",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "11-task-detail.png",
+      "route": "/boards/board-1",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "11-task-detail-fields.png",
+      "route": "/boards/board-1",
+      "section": "assignees, custom fields and dependencies",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "12-task-detail-checklist.png",
+      "route": "/boards/board-1",
+      "section": "Checklist",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "12-task-detail-comments.png",
+      "route": "/boards/board-1",
+      "section": "Comments",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "12-task-detail-files.png",
+      "route": "/boards/board-1",
+      "section": "Files",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "13-board-settings.png",
+      "route": "/boards/board-1",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "14-board-members.png",
+      "route": "/boards/board-1",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "15-board-activity.png",
+      "route": "/boards/board-1",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    },
+    {
+      "file": "16-command-palette.png",
+      "route": "/boards/board-1",
+      "section": "top",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "mockData": true
+    }
+  ]
+}
